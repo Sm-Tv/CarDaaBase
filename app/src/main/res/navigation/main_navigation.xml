@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/fullListCars">
+
+    <fragment
+        android:id="@+id/fullListCars"
+        android:name="sm_tv.com.cardatabase.view.FullListCars"
+        android:label="@string/labelFirstFragment"
+        tools:layout="@layout/fragment_full_list_cars" >
+        <action
+            android:id="@+id/action_fullListCars_to_parameterSettingScreen"
+            app:destination="@id/parameterSettingScreen" />
+        <action
+            android:id="@+id/action_fullListCars_to_fullScreenCarImage"
+            app:destination="@id/fullScreenCarImage" />
+    </fragment>
+    <fragment
+        android:id="@+id/fullScreenCarImage"
+        android:name="sm_tv.com.cardatabase.view.FullScreenCarImage"
+        android:label="@string/labelSecondFragment"
+        tools:layout="@layout/fragment_full_screen_car_image" >
+        <action
+            android:id="@+id/action_fullScreenCarImage_to_fullListCars"
+            app:destination="@id/fullListCars" />
+        <argument
+            android:name="Name"
+            app:argType="string"
+            android:defaultValue="error" />
+    </fragment>
+    <fragment
+        android:id="@+id/parameterSettingScreen"
+        android:name="sm_tv.com.cardatabase.view.ParameterSettingScreen"
+        android:label="@string/labelThirdFragment"
+        tools:layout="@layout/fragment_parametr_setting_screen" >
+        <action
+            android:id="@+id/action_parameterSettingScreen_to_fullListCars"
+            app:destination="@id/fullListCars" />
+    </fragment>
+</navigation>
