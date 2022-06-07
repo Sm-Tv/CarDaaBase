@@ -1,5 +1,6 @@
 package sm_tv.com.cardatabase.model.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -20,9 +21,10 @@ import sm_tv.com.cardatabase.viewModel.CarDataViewModel
 
 class NewAdapter: RecyclerView.Adapter<NewAdapter.MyViewHolder>() {
     //private var sortedList = SortedList<Note>()
-    private lateinit var paramSort :String
+    private var paramSort =""
+    private var flagFilter = false
 
-    private var sortedList = SortedList(CarData::class.java, object : SortedList.Callback<CarData>() {
+    var sortedList = SortedList(CarData::class.java, object : SortedList.Callback<CarData>() {
 
         override fun onChanged(position: Int, count: Int) {
             notifyItemRangeChanged(position, count)
@@ -49,6 +51,15 @@ class NewAdapter: RecyclerView.Adapter<NewAdapter.MyViewHolder>() {
         }
 
         override fun compare(o1: CarData, o2: CarData): Int {
+            /*if(flagFilter && paramSort!="") {
+                if(o2.yearIssue > o1.yearIssue && o2.name == paramSort && o1.name != paramSort)
+                {
+                    return 1
+                }
+            }*/
+            if (flagFilter && o2.yearIssue > o1.yearIssue){
+                return 1
+            }
             if (o2.name == paramSort && o1.name != paramSort) {
                 return 1
             }
@@ -60,9 +71,7 @@ class NewAdapter: RecyclerView.Adapter<NewAdapter.MyViewHolder>() {
 
     class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        //private lateinit var  mViewModel: NoteViewModels
         private lateinit var carItem: CarData
-        //private var siletn: Boolean = true
 
         fun bind(car: CarData){
             carItem = car
@@ -71,50 +80,11 @@ class NewAdapter: RecyclerView.Adapter<NewAdapter.MyViewHolder>() {
             itemView.tvClassification.text = carItem.classification
 
             itemView.imCar.setOnClickListener {
-                //val action = ListFragmentDirections.actionListFragmentToUpdateFeagment(note)
                 val bundle = Bundle()
                 bundle.putString("citiName", carItem.name)
                 itemView.findNavController().navigate(R.id.action_fullListCars_to_fullScreenCarImage)
             }
-
-            /*val itemTouchHelper = ItemTouchHelper(object : SwipeHelper(recyclerView) {
-                override fun instantiateUnderlayButton(position: Int): List<UnderlayButton> {
-                    val deleteButton = deleteButton( itemView, context, viewModel )
-                    val updateButton = updateButton(itemView, context)
-                    return listOf(deleteButton, updateButton)
-                }
-            })
-            //itemTouchHelper.attachToRecyclerView(recyclerView)*/
         }
-
-        /*fun deleteButton(view: View, context: Context, viewModel: CarDataViewModel): SwipeHelper.UnderlayButton{
-            return SwipeHelper.UnderlayButton(
-                context,
-                "Delete",
-                14.0f,
-                android.R.color.holo_red_light,
-                object : SwipeHelper.UnderlayButtonClickListener {
-                    override fun onClick() {
-                        viewModel.deleteCarData(carItem)
-                    }
-                })
-        }*/
-
-       /* fun updateButton( view: View, context: Context): SwipeHelper.UnderlayButton{
-            return SwipeHelper.UnderlayButton(
-                context,
-                "Update",
-                14.0f,
-                android.R.color.holo_blue_light,
-                object : SwipeHelper.UnderlayButtonClickListener {
-                    override fun onClick() {
-                        val carData = carItem
-                        val action = FullListCarsDirections.actionFullListCarsToUpdateCarFragment(carData)
-                        view.findNavController().navigate(action)
-                        Toast.makeText(context, "updateButton", Toast.LENGTH_SHORT).show()
-                    }
-                })
-        }*/
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -131,8 +101,16 @@ class NewAdapter: RecyclerView.Adapter<NewAdapter.MyViewHolder>() {
         return sortedList.size()
     }
 
-    fun setItems(cars: List<CarData>, sort: String,) {
+    fun getParamFilter(param: Boolean){
+        flagFilter = param
+    }
+
+    fun getParamSort(sort: String){
         paramSort = sort
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun setItems(cars: List<CarData>,) {
         sortedList.replaceAll(cars)
     }
 }

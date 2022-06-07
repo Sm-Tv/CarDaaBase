@@ -4,13 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,30 +25,37 @@ class FullListCars : Fragment() {
 
     private lateinit var mViewModel: CarDataViewModel
     private lateinit var adapter: NewAdapter
-    private lateinit var holder: NewAdapter.MyViewHolder
+    private lateinit var myEdTextSort: TextView
+    private lateinit var myRecyclerView: RecyclerView
     private lateinit var carList: List<CarData>
+    private lateinit var filterCarLIst: List<CarData>
+    private var filterFlag = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_full_list_cars, container, false)
-        initMyVM()
-        adapter = NewAdapter()
-        holder = NewAdapter.MyViewHolder(view)
-        initRecycler(view, adapter)
+        init(view)
+        lookAfterLD()
+        customRecycler(view, adapter)
         addNewCar(view)
         sortByName(view)
-
-
+        filterByYears(view)
         return view
     }
 
-    private fun initMyVM() {
+    private fun init(view: View){
         mViewModel = ViewModelProvider(this)[CarDataViewModel::class.java]
+        myEdTextSort = view.findViewById(R.id.myEdTextSort)
+        adapter = NewAdapter()
+        myRecyclerView = view.findViewById(R.id.myRecycler)
+    }
+
+    private fun lookAfterLD() {
         mViewModel.readAllData.observe(viewLifecycleOwner, Observer { car ->
             carList = car
-            adapter.setItems(car, "amv")
+            updateData(carList)
         })
     }
 
@@ -61,17 +67,44 @@ class FullListCars : Fragment() {
     }
 
     private fun sortByName(view: View) {
-        val textName = view.findViewById<EditText>(R.id.myEdTextSort)
         val buttonSort = view.findViewById<Button>(R.id.myButtonSort)
         buttonSort.setOnClickListener {
-            adapter.setItems(carList, textName.text.toString())
+            if(filterFlag){
+                adapter.getParamSort(myEdTextSort.text.toString())
+                updateData(filterCarLIst)
+            }else{
+                adapter.getParamSort(myEdTextSort.text.toString())
+                updateData(carList)
+            }
         }
     }
 
-    private fun initRecycler(view: View, adapter: NewAdapter) {
-        val myRecyclerView = view.findViewById<RecyclerView>(R.id.myRecycler)
+    private fun filterByYears(view: View){
+        val myEdYearsFilter = view.findViewById<EditText>(R.id.myEdYearsFilter)
+        val myCheckBox = view.findViewById<CheckBox>(R.id.myCheckBox)
+        myCheckBox.setOnCheckedChangeListener { compoundButton, checked ->
+            filterFlag = checked
+            if (checked){
+                filterCarLIst = carList.filter { it.yearIssue == myEdYearsFilter.text.toString().toInt() }
+                adapter.getParamFilter(checked)
+                updateData(filterCarLIst)
+            }
+            else{
+                adapter.getParamFilter(false)
+                updateData(carList)
+            }
+        }
+    }
+
+    private fun updateData(carData: List<CarData>){
+        adapter.setItems(carData)
+        myRecyclerView.smoothScrollToPosition(0)
+    }
+
+    private fun customRecycler(view: View, adapter: NewAdapter) {
         myRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         myRecyclerView.adapter = adapter
+        myRecyclerView.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
         val itemTouchHelper = ItemTouchHelper(object : SwipeHelper(myRecyclerView) {
             override fun instantiateUnderlayButton(position: Int): List<UnderlayButton> {
                 val deleteButton = deleteButton(position)
@@ -90,9 +123,7 @@ class FullListCars : Fragment() {
             android.R.color.holo_red_light,
             object : SwipeHelper.UnderlayButtonClickListener {
                 override fun onClick() {
-                    println("________________${carList[position]}")
-                    val size = carList.size
-                    val car = carList[(size - 1) - position]
+                    val car = adapter.sortedList.get(position)
                     mViewModel.deleteCarData(car)
                 }
             })
@@ -106,11 +137,9 @@ class FullListCars : Fragment() {
             android.R.color.holo_blue_light,
             object : SwipeHelper.UnderlayButtonClickListener {
                 override fun onClick() {
-                    val size = carList.size
-                    val carData = carList[(size - 1) - position]
+                    val carData = adapter.sortedList.get(position)
                     val action = FullListCarsDirections.actionFullListCarsToUpdateCarFragment(carData)
                     findNavController().navigate(action)
-                    Toast.makeText(requireContext(), "updateButton", Toast.LENGTH_SHORT).show()
                 }
             })
     }
