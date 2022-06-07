@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_fullListCars_to_fullScreenCarImage"
             app:destination="@id/fullScreenCarImage" />
+        <action
+            android:id="@+id/action_fullListCars_to_updateCarFragment"
+            app:destination="@id/updateCarFragment" />
     </fragment>
     <fragment
         android:id="@+id/fullScreenCarImage"
@@ -32,11 +35,23 @@
     </fragment>
     <fragment
         android:id="@+id/parameterSettingScreen"
-        android:name="sm_tv.com.cardatabase.view.ParameterSettingScreen"
+        android:name="sm_tv.com.cardatabase.view.AddCarFragment"
         android:label="@string/labelThirdFragment"
-        tools:layout="@layout/fragment_parametr_setting_screen" >
+        tools:layout="@layout/add_car_fragment" >
         <action
             android:id="@+id/action_parameterSettingScreen_to_fullListCars"
             app:destination="@id/fullListCars" />
+    </fragment>
+    <fragment
+        android:id="@+id/updateCarFragment"
+        android:name="sm_tv.com.cardatabase.view.UpdateCarFragment"
+        android:label="@string/labelFourthFragment"
+        tools:layout="@layout/fragment_update_car" >
+        <action
+            android:id="@+id/action_updateCarFragment_to_fullListCars"
+            app:destination="@id/fullListCars" />
+        <argument
+            android:name="carItem"
+            app:argType="sm_tv.com.cardatabase.model.CarData" />
     </fragment>
 </navigation>

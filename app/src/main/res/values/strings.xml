@@ -5,10 +5,13 @@
 
     <string name="labelFirstFragment">Список автомобилей</string>
     <string name="labelSecondFragment">Экран автомобиля</string>
-    <string name="labelThirdFragment">Настрйка параметров</string>
+    <string name="labelThirdFragment">Добавление автомобиля</string>
+    <string name="labelFourthFragment">Обновление данных</string>
 
     <string name="nameCar">Марка:</string>
     <string name="yearIssue">Год выпуска:</string>
     <string name="classification">Классификация:</string>
+
+    <string name="warning_message_shop">Введите данные</string>
 
 </resources>

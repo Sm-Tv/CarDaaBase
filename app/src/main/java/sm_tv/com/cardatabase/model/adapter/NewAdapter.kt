@@ -1,15 +1,22 @@
 package sm_tv.com.cardatabase.model.adapter
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SortedList
 import kotlinx.android.synthetic.main.car_item.view.*
 import sm_tv.com.cardatabase.R
 import sm_tv.com.cardatabase.model.CarData
+import sm_tv.com.cardatabase.utils.SwipeHelper
+import sm_tv.com.cardatabase.view.FullListCarsDirections
+import sm_tv.com.cardatabase.viewModel.CarDataViewModel
 
 class NewAdapter: RecyclerView.Adapter<NewAdapter.MyViewHolder>() {
     //private var sortedList = SortedList<Note>()
@@ -22,7 +29,7 @@ class NewAdapter: RecyclerView.Adapter<NewAdapter.MyViewHolder>() {
         }
 
         override fun areContentsTheSame(oldItem: CarData, newItem: CarData): Boolean {
-            return oldItem.equals(newItem)
+            return oldItem == newItem
         }
 
         override fun areItemsTheSame(item1: CarData, item2: CarData): Boolean {
@@ -51,9 +58,6 @@ class NewAdapter: RecyclerView.Adapter<NewAdapter.MyViewHolder>() {
         }
     })
 
-
-
-
     class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         //private lateinit var  mViewModel: NoteViewModels
@@ -62,7 +66,6 @@ class NewAdapter: RecyclerView.Adapter<NewAdapter.MyViewHolder>() {
 
         fun bind(car: CarData){
             carItem = car
-
             itemView.tvName.text = carItem.name
             itemView.tvYears.text = carItem.yearIssue.toString()
             itemView.tvClassification.text = carItem.classification
@@ -73,7 +76,45 @@ class NewAdapter: RecyclerView.Adapter<NewAdapter.MyViewHolder>() {
                 bundle.putString("citiName", carItem.name)
                 itemView.findNavController().navigate(R.id.action_fullListCars_to_fullScreenCarImage)
             }
+
+            /*val itemTouchHelper = ItemTouchHelper(object : SwipeHelper(recyclerView) {
+                override fun instantiateUnderlayButton(position: Int): List<UnderlayButton> {
+                    val deleteButton = deleteButton( itemView, context, viewModel )
+                    val updateButton = updateButton(itemView, context)
+                    return listOf(deleteButton, updateButton)
+                }
+            })
+            //itemTouchHelper.attachToRecyclerView(recyclerView)*/
         }
+
+        /*fun deleteButton(view: View, context: Context, viewModel: CarDataViewModel): SwipeHelper.UnderlayButton{
+            return SwipeHelper.UnderlayButton(
+                context,
+                "Delete",
+                14.0f,
+                android.R.color.holo_red_light,
+                object : SwipeHelper.UnderlayButtonClickListener {
+                    override fun onClick() {
+                        viewModel.deleteCarData(carItem)
+                    }
+                })
+        }*/
+
+       /* fun updateButton( view: View, context: Context): SwipeHelper.UnderlayButton{
+            return SwipeHelper.UnderlayButton(
+                context,
+                "Update",
+                14.0f,
+                android.R.color.holo_blue_light,
+                object : SwipeHelper.UnderlayButtonClickListener {
+                    override fun onClick() {
+                        val carData = carItem
+                        val action = FullListCarsDirections.actionFullListCarsToUpdateCarFragment(carData)
+                        view.findNavController().navigate(action)
+                        Toast.makeText(context, "updateButton", Toast.LENGTH_SHORT).show()
+                    }
+                })
+        }*/
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -90,7 +131,7 @@ class NewAdapter: RecyclerView.Adapter<NewAdapter.MyViewHolder>() {
         return sortedList.size()
     }
 
-    fun setItems(cars: List<CarData>, sort: String) {
+    fun setItems(cars: List<CarData>, sort: String,) {
         paramSort = sort
         sortedList.replaceAll(cars)
     }

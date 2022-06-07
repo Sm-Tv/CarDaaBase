@@ -5,9 +5,10 @@
       <map>
         <entry key="..\:/Users/User/AndroidStudioProjects/CarDataBase/app/src/main/res/layout/activity_main.xml" value="0.2760416666666667" />
         <entry key="..\:/Users/User/AndroidStudioProjects/CarDataBase/app/src/main/res/layout/car_item.xml" value="0.5" />
-        <entry key="..\:/Users/User/AndroidStudioProjects/CarDataBase/app/src/main/res/layout/fragment_full_list_cars.xml" value="0.17135416666666667" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/CarDataBase/app/src/main/res/layout/fragment_full_list_cars.xml" value="0.33" />
         <entry key="..\:/Users/User/AndroidStudioProjects/CarDataBase/app/src/main/res/layout/fragment_full_screen_car_image.xml" value="0.18541666666666667" />
         <entry key="..\:/Users/User/AndroidStudioProjects/CarDataBase/app/src/main/res/layout/fragment_parametr_setting_screen.xml" value="0.17135416666666667" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/CarDataBase/app/src/main/res/layout/fragment_update_car.xml" value="0.2760416666666667" />
         <entry key="..\:/Users/User/AndroidStudioProjects/CarDataBase/app/src/main/res/layout/item_test.xml" value="0.2760416666666667" />
       </map>
     </option>
