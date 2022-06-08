@@ -19,7 +19,6 @@ import sm_tv.com.cardatabase.viewModel.CarDataViewModel
 class UpdateCarFragment : Fragment() {
 
     private val args by navArgs<UpdateCarFragmentArgs>()
-    private lateinit var myViewModel: CarDataViewModel
 
     private lateinit var mViewModel: CarDataViewModel
     private lateinit var edMyNameUp: EditText
@@ -57,11 +56,15 @@ class UpdateCarFragment : Fragment() {
         myButtonAddUp.setOnClickListener {
             val url = "url url url"
             val name = edMyNameUp.text.toString()
-            val years = edMyYearsUp.text.toString().toInt()
+            val years = if(edMyYearsUp.text.toString() == ""){
+                0
+            }else{
+                edMyYearsUp.text.toString().toInt()
+            }
             val classification =edMyClassificationUp.text.toString()
             if(chekInput(url) && chekInput(name) && chekInput(years) && chekInput(classification)){
                 val carData = CarData(args.carItem.uid,url,name,years,classification,args.carItem.timestamp)
-                myViewModel.updateCarData(carData)
+                mViewModel.updateCarData(carData)
                 findNavController().navigate(R.id.action_updateCarFragment_to_fullListCars)
             } else {
                 Toast.makeText(requireContext(), resources.getString(R.string.warning_message_shop), Toast.LENGTH_SHORT)
