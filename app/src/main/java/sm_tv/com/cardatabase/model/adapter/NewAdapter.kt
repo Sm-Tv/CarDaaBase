@@ -72,7 +72,6 @@ class NewAdapter : RecyclerView.Adapter<NewAdapter.MyViewHolder>() {
             Picasso.get()
                 .load(uri)
                 .resize(200, 200)
-                .placeholder(R.drawable.ic_baseline_directions_car_24)
                 .error(R.drawable.ic_baseline_delete_24)
                 .into(itemView.imCar, object : Callback {
                     override fun onSuccess() {

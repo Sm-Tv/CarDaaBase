@@ -39,6 +39,7 @@
         android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="text"
+        android:visibility="invisible"
         android:hint="Введите марку машины"
         app:layout_constraintEnd_toStartOf="@+id/myButtonSort"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,6 +51,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
+        android:visibility="gone"
         android:text="Применить"
         app:layout_constraintBottom_toBottomOf="@+id/myEdTextSort"
         app:layout_constraintEnd_toEndOf="parent"
@@ -96,5 +98,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/myCheckBox"
         app:layout_constraintTop_toTopOf="@+id/myCheckBox" />
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="0dp"
+        android:spinnerMode="dialog"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@android:drawable/btn_dropdown"
+        app:layout_constraintEnd_toStartOf="@+id/myButtonSort"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

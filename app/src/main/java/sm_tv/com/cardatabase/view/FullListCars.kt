@@ -25,11 +25,16 @@ class FullListCars : Fragment() {
 
     private lateinit var mViewModel: CarDataViewModel
     private lateinit var adapter: NewAdapter
+    private lateinit var adapterSpinner: ArrayAdapter<String>
+    private lateinit var mySpinner: Spinner
     private lateinit var myEdTextSort: TextView
     private lateinit var myRecyclerView: RecyclerView
     private lateinit var carList: List<CarData>
+    private lateinit var brandCarList: List<String>
     private lateinit var filterCarLIst: List<CarData>
     private var filterFlag = false
+    private var paramSortSpinner = ""
+    private val testList = listOf<String>("Лада", "BMV", "Ford")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,25 +42,40 @@ class FullListCars : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_full_list_cars, container, false)
         init(view)
-        lookAfterLD()
+        lookAfterAllDataCar()
+        lookAfterBrandCar()
+        super.onStart()
         customRecycler(view, adapter)
         addNewCar(view)
-        sortByName(view)
+        //initSpinner(view, brandCarList)
         filterByYears(view)
         return view
     }
 
-    private fun init(view: View){
+    override fun onStart() {
+        super.onStart()
+
+    }
+
+    private fun init(view: View) {
         mViewModel = ViewModelProvider(this)[CarDataViewModel::class.java]
         myEdTextSort = view.findViewById(R.id.myEdTextSort)
         adapter = NewAdapter()
         myRecyclerView = view.findViewById(R.id.myRecycler)
+        mySpinner = view.findViewById<Spinner>(R.id.spinner)
     }
 
-    private fun lookAfterLD() {
+    private fun lookAfterAllDataCar() {
         mViewModel.readAllData.observe(viewLifecycleOwner, Observer { car ->
             carList = car
             updateData(carList)
+        })
+    }
+
+    private fun lookAfterBrandCar() {
+        mViewModel.readBrandCar.observe(viewLifecycleOwner, Observer { brand ->
+            brandCarList = brand.distinct()
+            initSpinner()
         })
     }
 
@@ -66,37 +86,35 @@ class FullListCars : Fragment() {
         }
     }
 
-    private fun sortByName(view: View) {
-        val buttonSort = view.findViewById<Button>(R.id.myButtonSort)
-        buttonSort.setOnClickListener {
-            if(filterFlag){
-                adapter.getParamSort(myEdTextSort.text.toString())
-                updateData(filterCarLIst)
-            }else{
-                adapter.getParamSort(myEdTextSort.text.toString())
-                updateData(carList)
-            }
+    private fun sortByName(sortParam: String) {
+        if (filterFlag) {
+            adapter.getParamSort(sortParam)
+            updateData(filterCarLIst)
+        } else {
+            adapter.getParamSort(sortParam)
+            updateData(carList)
         }
     }
 
-    private fun filterByYears(view: View){
+    private fun filterByYears(view: View) {
         val myEdYearsFilter = view.findViewById<EditText>(R.id.myEdYearsFilter)
         val myCheckBox = view.findViewById<CheckBox>(R.id.myCheckBox)
         myCheckBox.setOnCheckedChangeListener { compoundButton, checked ->
             filterFlag = checked
-            if (checked){
-                filterCarLIst = carList.filter { it.yearIssue == myEdYearsFilter.text.toString().toInt() }
-                adapter.getParamFilter(checked)
-                updateData(filterCarLIst)
-            }
-            else{
+            if (checked) {
+                if (myEdYearsFilter.text.toString() != "") {
+                    filterCarLIst = carList.filter { it.yearIssue == myEdYearsFilter.text.toString().toInt() }
+                    adapter.getParamFilter(checked)
+                    updateData(filterCarLIst)
+                }
+            } else {
                 adapter.getParamFilter(false)
                 updateData(carList)
             }
         }
     }
 
-    private fun updateData(carData: List<CarData>){
+    private fun updateData(carData: List<CarData>) {
         adapter.setItems(carData)
         myRecyclerView.smoothScrollToPosition(0)
     }
@@ -114,6 +132,26 @@ class FullListCars : Fragment() {
         })
         itemTouchHelper.attachToRecyclerView(myRecyclerView)
     }
+
+    private fun initSpinner() {
+        adapterSpinner = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, brandCarList)
+        adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        mySpinner.adapter = adapterSpinner
+        mySpinner.prompt = "Параметр сортировки"
+        mySpinner.setSelection(0)
+        mySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                paramSortSpinner = mySpinner.selectedItem.toString()
+                sortByName(paramSortSpinner)
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                //mySpinner.setSelection(0)
+            }
+        }
+
+    }
+
 
     private fun deleteButton(position: Int): SwipeHelper.UnderlayButton {
         return SwipeHelper.UnderlayButton(

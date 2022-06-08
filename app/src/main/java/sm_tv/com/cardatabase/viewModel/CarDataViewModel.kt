@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import sm_tv.com.cardatabase.model.BrandCar
 import sm_tv.com.cardatabase.model.CarData
 import sm_tv.com.cardatabase.model.storage.CarDataBase
 import sm_tv.com.cardatabase.model.storage.repositories.CarDataRepository
@@ -13,6 +14,7 @@ import sm_tv.com.cardatabase.model.storage.repositories.CarDataRepository
 class CarDataViewModel(application: Application): AndroidViewModel(application) {
 
     val readAllData: LiveData<List<CarData>>
+    val readBrandCar: LiveData<List<String>>
 
     //val readAllDataCompletedNote: LiveData<List<Note>>
     private val repository: CarDataRepository
@@ -21,6 +23,7 @@ class CarDataViewModel(application: Application): AndroidViewModel(application) 
         val carDao = CarDataBase.getDatabase(application).carDao()
         repository = CarDataRepository(carDao)
         readAllData = repository.readAllData
+        readBrandCar = repository.readBrandCar
     }
 
     fun addCarData(carData: CarData){
