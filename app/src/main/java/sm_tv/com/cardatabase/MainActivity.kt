@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
+import sm_tv.com.cardatabase.utils.PermissionUtils
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -11,6 +12,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         setupActionBarWithNavController(findNavController(R.id.fragment))
+        if (!PermissionUtils.hasPermissions(this)){
+            PermissionUtils.requestPermissions(this, 101)
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

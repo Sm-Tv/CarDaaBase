@@ -1,17 +1,20 @@
 package sm_tv.com.cardatabase.view
 
+import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.squareup.picasso.Picasso
 import sm_tv.com.cardatabase.R
 import sm_tv.com.cardatabase.model.CarData
 import sm_tv.com.cardatabase.viewModel.CarDataViewModel
@@ -25,28 +28,31 @@ class UpdateCarFragment : Fragment() {
     private lateinit var edMyYearsUp: EditText
     private lateinit var edMyClassificationUp: EditText
     private lateinit var myButtonAddUp: Button
+    private lateinit var myImCarUp: ImageView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_update_car, container, false)
+
         initElement(view)
+        Picasso.get().load(Uri.parse(args.carItem.url)).into(myImCarUp)
         dataProtection()
         updateItem()
         return view
     }
 
-    private fun initElement(view: View){
-        mViewModel = ViewModelProvider(this).get(CarDataViewModel::class.java)
+    private fun initElement(view: View) {
+        myImCarUp = view.findViewById(R.id.myImCarUp)
+        mViewModel = ViewModelProvider(this)[CarDataViewModel::class.java]
         myButtonAddUp = view.findViewById(R.id.myButtonAddUp)
         edMyNameUp = view.findViewById(R.id.myEdNameUp)
         edMyYearsUp = view.findViewById(R.id.myEdYearsUp)
         edMyClassificationUp = view.findViewById(R.id.myEdClassificationUp)
     }
 
-    private fun dataProtection(){
+    private fun dataProtection() {
         edMyNameUp.setText(args.carItem.name)
         edMyYearsUp.setText(args.carItem.yearIssue.toString())
         edMyClassificationUp.setText(args.carItem.classification)
@@ -54,16 +60,16 @@ class UpdateCarFragment : Fragment() {
 
     private fun updateItem() {
         myButtonAddUp.setOnClickListener {
-            val url = "url url url"
+            val url = "url"
             val name = edMyNameUp.text.toString()
-            val years = if(edMyYearsUp.text.toString() == ""){
+            val years = if (edMyYearsUp.text.toString() == "") {
                 0
-            }else{
+            } else {
                 edMyYearsUp.text.toString().toInt()
             }
-            val classification =edMyClassificationUp.text.toString()
-            if(chekInput(url) && chekInput(name) && chekInput(years) && chekInput(classification)){
-                val carData = CarData(args.carItem.uid,url,name,years,classification,args.carItem.timestamp)
+            val classification = edMyClassificationUp.text.toString()
+            if (chekInput(url) && chekInput(name) && chekInput(years) && chekInput(classification)) {
+                val carData = CarData(args.carItem.uid, url, name, years, classification, args.carItem.timestamp)
                 mViewModel.updateCarData(carData)
                 findNavController().navigate(R.id.action_updateCarFragment_to_fullListCars)
             } else {
