@@ -28,13 +28,13 @@ class FullListCars : Fragment() {
     private lateinit var adapterSpinner: ArrayAdapter<String>
     private lateinit var mySpinner: Spinner
     private lateinit var myEdTextSort: TextView
+    private lateinit var myEdYearsFilter: EditText
     private lateinit var myRecyclerView: RecyclerView
     private lateinit var carList: List<CarData>
     private lateinit var brandCarList: List<String>
     private lateinit var filterCarLIst: List<CarData>
     private var filterFlag = false
     private var paramSortSpinner = ""
-    private val testList = listOf<String>("Лада", "BMV", "Ford")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,16 +45,10 @@ class FullListCars : Fragment() {
         lookAfterAllDataCar()
         lookAfterBrandCar()
         super.onStart()
-        customRecycler(view, adapter)
+        customRecycler(adapter)
         addNewCar(view)
-        //initSpinner(view, brandCarList)
         filterByYears(view)
         return view
-    }
-
-    override fun onStart() {
-        super.onStart()
-
     }
 
     private fun init(view: View) {
@@ -62,13 +56,20 @@ class FullListCars : Fragment() {
         myEdTextSort = view.findViewById(R.id.myEdTextSort)
         adapter = NewAdapter()
         myRecyclerView = view.findViewById(R.id.myRecycler)
-        mySpinner = view.findViewById<Spinner>(R.id.spinner)
+        mySpinner = view.findViewById(R.id.spinner)
+        myEdYearsFilter = view.findViewById(R.id.myEdYearsFilter)
     }
 
     private fun lookAfterAllDataCar() {
         mViewModel.readAllData.observe(viewLifecycleOwner, Observer { car ->
             carList = car
             updateData(carList)
+            if (filterFlag) {
+                filterCarLIst = carList.filter {
+                    it.yearIssue == myEdYearsFilter.text.toString().toInt()
+                }
+                updateData(filterCarLIst)
+            }
         })
     }
 
@@ -97,13 +98,13 @@ class FullListCars : Fragment() {
     }
 
     private fun filterByYears(view: View) {
-        val myEdYearsFilter = view.findViewById<EditText>(R.id.myEdYearsFilter)
         val myCheckBox = view.findViewById<CheckBox>(R.id.myCheckBox)
         myCheckBox.setOnCheckedChangeListener { compoundButton, checked ->
             filterFlag = checked
             if (checked) {
                 if (myEdYearsFilter.text.toString() != "") {
-                    filterCarLIst = carList.filter { it.yearIssue == myEdYearsFilter.text.toString().toInt() }
+                    filterCarLIst =
+                        carList.filter { it.yearIssue == myEdYearsFilter.text.toString().toInt() }
                     adapter.getParamFilter(checked)
                     updateData(filterCarLIst)
                 }
@@ -119,10 +120,15 @@ class FullListCars : Fragment() {
         myRecyclerView.smoothScrollToPosition(0)
     }
 
-    private fun customRecycler(view: View, adapter: NewAdapter) {
+    private fun customRecycler(adapter: NewAdapter) {
         myRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         myRecyclerView.adapter = adapter
-        myRecyclerView.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
+        myRecyclerView.addItemDecoration(
+            DividerItemDecoration(
+                requireContext(),
+                DividerItemDecoration.VERTICAL
+            )
+        )
         val itemTouchHelper = ItemTouchHelper(object : SwipeHelper(myRecyclerView) {
             override fun instantiateUnderlayButton(position: Int): List<UnderlayButton> {
                 val deleteButton = deleteButton(position)
@@ -134,7 +140,8 @@ class FullListCars : Fragment() {
     }
 
     private fun initSpinner() {
-        adapterSpinner = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, brandCarList)
+        adapterSpinner =
+            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, brandCarList)
         adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         mySpinner.adapter = adapterSpinner
         mySpinner.prompt = "Параметр сортировки"
@@ -152,7 +159,6 @@ class FullListCars : Fragment() {
 
     }
 
-
     private fun deleteButton(position: Int): SwipeHelper.UnderlayButton {
         return SwipeHelper.UnderlayButton(
             requireContext(),
@@ -163,6 +169,7 @@ class FullListCars : Fragment() {
                 override fun onClick() {
                     val car = adapter.sortedList.get(position)
                     mViewModel.deleteCarData(car)
+
                 }
             })
     }
@@ -176,7 +183,8 @@ class FullListCars : Fragment() {
             object : SwipeHelper.UnderlayButtonClickListener {
                 override fun onClick() {
                     val carData = adapter.sortedList.get(position)
-                    val action = FullListCarsDirections.actionFullListCarsToUpdateCarFragment(carData)
+                    val action =
+                        FullListCarsDirections.actionFullListCarsToUpdateCarFragment(carData)
                     findNavController().navigate(action)
                 }
             })

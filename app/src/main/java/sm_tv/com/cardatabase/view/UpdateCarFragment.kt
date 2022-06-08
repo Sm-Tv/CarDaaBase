@@ -1,5 +1,7 @@
 package sm_tv.com.cardatabase.view
 
+import android.app.Activity
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
@@ -16,8 +18,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.squareup.picasso.Picasso
 import sm_tv.com.cardatabase.R
+import sm_tv.com.cardatabase.constans.Constants
 import sm_tv.com.cardatabase.model.CarData
 import sm_tv.com.cardatabase.viewModel.CarDataViewModel
+import java.io.FileNotFoundException
 
 class UpdateCarFragment : Fragment() {
 
@@ -29,6 +33,7 @@ class UpdateCarFragment : Fragment() {
     private lateinit var edMyClassificationUp: EditText
     private lateinit var myButtonAddUp: Button
     private lateinit var myImCarUp: ImageView
+    private var imageUri: Uri? = Uri.parse("uri")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,8 +42,10 @@ class UpdateCarFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_update_car, container, false)
 
         initElement(view)
-        Picasso.get().load(Uri.parse(args.carItem.url)).into(myImCarUp)
+        Picasso.get().load(Uri.parse(args.carItem.url))
+            .error(R.drawable.ic_baseline_directions_car_24).into(myImCarUp)
         dataProtection()
+        updateImageCar()
         updateItem()
         return view
     }
@@ -60,7 +67,10 @@ class UpdateCarFragment : Fragment() {
 
     private fun updateItem() {
         myButtonAddUp.setOnClickListener {
-            val url = "url"
+            if (imageUri == Uri.parse("uri")) {
+                imageUri = Uri.parse(args.carItem.url)
+            }
+            val url = imageUri.toString()
             val name = edMyNameUp.text.toString()
             val years = if (edMyYearsUp.text.toString() == "") {
                 0
@@ -69,18 +79,56 @@ class UpdateCarFragment : Fragment() {
             }
             val classification = edMyClassificationUp.text.toString()
             if (chekInput(url) && chekInput(name) && chekInput(years) && chekInput(classification)) {
-                val carData = CarData(args.carItem.uid, url, name, years, classification, args.carItem.timestamp)
+                val carData = CarData(
+                    args.carItem.uid,
+                    url,
+                    name,
+                    years,
+                    classification,
+                    args.carItem.timestamp
+                )
                 mViewModel.updateCarData(carData)
                 findNavController().navigate(R.id.action_updateCarFragment_to_fullListCars)
             } else {
-                Toast.makeText(requireContext(), resources.getString(R.string.warning_message_shop), Toast.LENGTH_SHORT)
+                Toast.makeText(
+                    requireContext(),
+                    resources.getString(R.string.warning_message_shop),
+                    Toast.LENGTH_SHORT
+                )
                     .show()
             }
         }
     }
 
+    private fun updateImageCar() {
+        myImCarUp.setOnClickListener {
+            callPickedImageActivity()
+        }
+    }
+
     private fun chekInput(title: Any): Boolean {
         return !(TextUtils.isEmpty(title.toString()))
+    }
+
+    private fun callPickedImageActivity() {
+        val photoPickerIntent = Intent(Intent.ACTION_PICK)
+        photoPickerIntent.type = "image/*"
+        startActivityForResult(photoPickerIntent, Constants.PICK_IMAGE_MULTIPLE_REQUEST_CODE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, imageReturnedIntent: Intent?) {
+        super.onActivityResult(requestCode, resultCode, imageReturnedIntent)
+        when (requestCode) {
+            Constants.PICK_IMAGE_MULTIPLE_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
+                try {
+                    imageUri = imageReturnedIntent?.data
+                    Picasso.get().load(imageUri).error(R.drawable.ic_baseline_directions_car_24)
+                        .into(myImCarUp)
+                } catch (e: FileNotFoundException) {
+                    e.printStackTrace()
+                }
+            }
+        }
     }
 
 

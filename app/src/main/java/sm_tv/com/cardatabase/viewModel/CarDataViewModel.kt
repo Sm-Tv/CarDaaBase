@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import sm_tv.com.cardatabase.model.BrandCar
 import sm_tv.com.cardatabase.model.CarData
 import sm_tv.com.cardatabase.model.storage.CarDataBase
 import sm_tv.com.cardatabase.model.storage.repositories.CarDataRepository

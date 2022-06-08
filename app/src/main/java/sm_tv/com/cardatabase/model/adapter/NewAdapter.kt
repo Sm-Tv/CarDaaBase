@@ -2,6 +2,7 @@ package sm_tv.com.cardatabase.model.adapter
 
 import android.annotation.SuppressLint
 import android.net.Uri
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -72,7 +73,7 @@ class NewAdapter : RecyclerView.Adapter<NewAdapter.MyViewHolder>() {
             Picasso.get()
                 .load(uri)
                 .resize(200, 200)
-                .error(R.drawable.ic_baseline_delete_24)
+                .error(R.drawable.ic_baseline_directions_car_24)
                 .into(itemView.imCar, object : Callback {
                     override fun onSuccess() {
                         println("__________________ONSUCCESS")
@@ -83,7 +84,9 @@ class NewAdapter : RecyclerView.Adapter<NewAdapter.MyViewHolder>() {
                     }
                 })
             itemView.imCar.setOnClickListener {
-                itemView.findNavController().navigate(R.id.action_fullListCars_to_fullScreenCarImage)
+                val bundle = Bundle()
+                bundle.putString("Url", carItem.url)
+                itemView.findNavController().navigate(R.id.action_fullListCars_to_fullScreenCarImage, bundle)
             }
         }
     }

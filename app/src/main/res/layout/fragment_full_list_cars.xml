@@ -10,7 +10,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/myRecycler"
-        android:layout_marginTop="12dp"
+        android:layout_margin="8dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -36,11 +36,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="44dp"
         android:ems="10"
+        android:hint="Введите марку машины"
         android:inputType="text"
         android:visibility="invisible"
-        android:hint="Введите марку машины"
         app:layout_constraintEnd_toStartOf="@+id/myButtonSort"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -102,11 +102,24 @@
     <Spinner
         android:id="@+id/spinner"
         android:layout_width="0dp"
-        android:spinnerMode="dialog"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
         android:background="@android:drawable/btn_dropdown"
-        app:layout_constraintEnd_toStartOf="@+id/myButtonSort"
+        android:spinnerMode="dialog"
+        app:layout_constraintEnd_toEndOf="@+id/textView"
+        app:layout_constraintStart_toStartOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="center"
+        android:text="Параметр сортировки"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

@@ -1,7 +1,6 @@
 package sm_tv.com.cardatabase.model.storage.repositories
 
 import androidx.lifecycle.LiveData
-import sm_tv.com.cardatabase.model.BrandCar
 import sm_tv.com.cardatabase.model.CarData
 import sm_tv.com.cardatabase.model.storage.CarDao
 

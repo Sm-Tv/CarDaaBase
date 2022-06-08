@@ -29,9 +29,9 @@
             android:id="@+id/action_fullScreenCarImage_to_fullListCars"
             app:destination="@id/fullListCars" />
         <argument
-            android:name="Name"
+            android:name="Url"
             app:argType="string"
-            android:defaultValue="error" />
+            android:defaultValue="Uri" />
     </fragment>
     <fragment
         android:id="@+id/parameterSettingScreen"
