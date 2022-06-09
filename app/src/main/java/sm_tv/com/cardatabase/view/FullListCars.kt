@@ -101,16 +101,19 @@ class FullListCars : Fragment() {
         val myCheckBox = view.findViewById<CheckBox>(R.id.myCheckBox)
         myCheckBox.setOnCheckedChangeListener { compoundButton, checked ->
             filterFlag = checked
-            if (checked) {
-                if (myEdYearsFilter.text.toString() != "") {
-                    filterCarLIst =
-                        carList.filter { it.yearIssue == myEdYearsFilter.text.toString().toInt() }
-                    adapter.getParamFilter(checked)
-                    updateData(filterCarLIst)
+            if (myEdYearsFilter.text.toString() != "") {
+                if (checked) {
+
+                        filterCarLIst =
+                            carList.filter { it.yearIssue == myEdYearsFilter.text.toString().toInt() }
+                        adapter.getParamFilter(checked)
+                        updateData(filterCarLIst)
+
+                } else {
+
+                    adapter.getParamFilter(false)
+                    updateData(carList)
                 }
-            } else {
-                adapter.getParamFilter(false)
-                updateData(carList)
             }
         }
     }
